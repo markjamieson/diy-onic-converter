@@ -20,6 +20,10 @@ diyOnicConverter('body', {
   remainderCssRules: ['color: #0A0A0A'],
 });
 ```
+3. To use the (very experimental) UI, call the function with no arguments. e.g.
+```JavaScript
+diyOnicConverter();
+```
 
 `options` argument accepts the following:
 

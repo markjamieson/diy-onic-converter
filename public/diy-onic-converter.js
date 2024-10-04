@@ -68,13 +68,35 @@ const diyOnicConverter = (
     const ID = 'diy-onic-converter-stylesheet';
     if (document.getElementById(ID)) {
       document.getElementById(ID)?.remove();
-    };
+    }
     const styleSheet = document.createElement('style');
     styleSheet.id = ID;
     document.head.append(styleSheet);
     styleSheet.sheet?.insertRule(`
       .diy-onic-converter__bold {
         font-weight: 700;
+      }
+    `);
+    styleSheet.sheet?.insertRule(`
+      .diy-onic-converter__ui {
+        background: white;
+        padding: 12px;
+        border: 1px solid #ccc;
+        opacity: 0.2;
+        transition: opacity 333ms;
+        overflow: hidden;
+        position: fixed;
+        bottom: 12px;
+        right: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+    `);
+
+    styleSheet.sheet?.insertRule(`
+      .diy-onic-converter__ui:hover {
+        opacity: 1;
       }
     `);
     if (boldCssRules) {
@@ -89,10 +111,53 @@ const diyOnicConverter = (
     }
   };
 
-  const container = document.querySelector(textContentContainerSelector);
-  console.log('Performing bionic reading conversion on:', container);
+  const insertUI = () => {
+    const uiContainer = document.createElement('div');
+    uiContainer.className = 'diy-onic-converter__ui';
+
+    const heading = document.createElement('h3');
+    heading.innerHTML = 'DIY-onic Converter UI';
+    uiContainer.append(heading);
+
+    const selectorInput = document.createElement('input');
+    selectorInput.placeholder = 'CSS selector';
+    uiContainer.append(selectorInput);
+
+    const charsToBoldInput = document.createElement('input');
+    charsToBoldInput.placeholder = 'chars to bold';
+    uiContainer.append(charsToBoldInput);
+
+    const boldCssRulesInput = document.createElement('textarea');
+    boldCssRulesInput.placeholder = 'bold CSS rules list';
+    uiContainer.append(boldCssRulesInput);
+
+    const remainderCssRulesInput = document.createElement('textarea');
+    remainderCssRulesInput.placeholder = 'remainder CSS rules list';
+    uiContainer.append(remainderCssRulesInput);
+
+    const updateButton = document.createElement('button');
+    updateButton.onclick = () => {
+      diyOnicConverter(selectorInput.value, {
+        numChars: Number(charsToBoldInput.value),
+        boldCssRules: boldCssRulesInput.value.split('\n'),
+        remainderCssRules: remainderCssRulesInput.value.split('\n'),
+      });
+    };
+    updateButton.innerText = 'Update';
+    uiContainer.append(updateButton);
+
+    document.body.append(uiContainer);
+  };
 
   const { numChars, boldCssRules, remainderCssRules } = validateOptions(opts);
+  if (!textContentContainerSelector) {
+    insertStyleSheet();
+    insertUI();
+    return;
+  }
+
+  const container = document.querySelector(textContentContainerSelector);
+  console.log('Performing bionic reading conversion on:', container);
 
   if (!container) {
     console.error(
