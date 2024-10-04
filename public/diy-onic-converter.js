@@ -34,6 +34,16 @@ const diyOnicConverter = (textContentContainerSelector, charsToBold = 3) => {
   const container = document.querySelector(textContentContainerSelector);
   console.log('Performing bionic reading conversion on:', container);
 
+  if (!container) {
+    console.error('Failed to find a container with given selector', textContentContainerSelector);
+    return;
+  }
+
+  if (typeof charsToBold !== 'number' || charsToBold <= 0) {
+    console.warn('Invalid `charsToBold` argument, reverting to default value')
+    charsToBold = 3;
+  }
+
   const paragraphs = container.querySelectorAll('p');
   paragraphs.forEach(
     (paragraph) => (paragraph.innerHTML = convertParagraph(paragraph))
